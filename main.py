@@ -9,6 +9,8 @@ from selenium.webdriver.chrome.options import Options
 from Absence import request_absence
 from SelinumUtils import today
 
+import LoginByGoogle as LoginByGoogle
+
 
 def load_config(config_file="config.json"):
     with open(config_file) as f:
@@ -56,12 +58,15 @@ def main():
 
     driver.get(config["PERSONIO_ABSENCE_URL"])
 
-    request_absence(
-        driver=driver,
-        absence_type="Mobile Office",
-        start_date=today,
-        end_date=today,
-    )
+    try:
+        LoginByGoogle.login_by_google_if_session_not_exist(driver)
+    finally:
+        request_absence(
+            driver=driver,
+            absence_type="Mobile Office",
+            start_date=today,
+            end_date=today,
+        )
 
     time.sleep(1)
 
